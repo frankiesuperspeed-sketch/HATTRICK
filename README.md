@@ -73,12 +73,18 @@ quindi il prezzo cresce in modo moltiplicativo con l'abilità e cala con l'età;
 in poi i coefficienti vengono dai tuoi dati, e R² dice quanto il modello li spiega.
 Sotto quella soglia si usano valori di partenza, dichiarati come tali.
 
-## I nomi della scala sono un dato, non codice
+## La scala dei rating
 
-La scheda *Rating* parte da una scala di nomi (`inesistente` … `divino`) che è
-**modificabile dall'interfaccia** e salvata nel browser. I nomi cambiano con la lingua
-e con le versioni del gioco, quindi nessuna funzione li dà per scontati: la scala viene
-passata da fuori a ogni conversione. Se correggi un nome, si adegua tutto.
+La scala italiana 0–20 (`inesistente` … `divino`) è quella ufficiale del gioco e vale
+sia per le abilità dei giocatori sia per i rating dei reparti. È bloccata da un test,
+così una modifica involontaria si vede subito.
+
+I **sottolivelli** (molto basso, basso, alto, molto alto) sono invece un'ipotesi non
+verificata, e la scheda lo dichiara.
+
+In ogni caso i nomi restano un dato e non delle costanti: sono modificabili
+dall'interfaccia — serve a chi gioca in un'altra lingua — e ogni funzione riceve la
+scala da fuori, così correggerne uno adegua tutto il resto.
 
 ## Avvio in locale
 

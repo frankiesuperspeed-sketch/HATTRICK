@@ -11,14 +11,13 @@ import {
 const scalaSalvata = deposito('scala-rating', {
   scala: SCALA_PREDEFINITA,
   sottolivelli: SOTTOLIVELLI_PREDEFINITI,
-  confermata: false,
 });
 
 export function render(host) {
   let testo = 'eccellente (molto alto)';
 
   const disegna = () => {
-    const { scala, sottolivelli, confermata } = scalaSalvata.leggi();
+    const { scala, sottolivelli } = scalaSalvata.leggi();
     const letto = interpreta(testo, { scala, sottolivelli });
 
     rimpiazza(host,
@@ -27,14 +26,11 @@ export function render(host) {
         h('p', null, 'Scrivi un rating come lo leggi in gioco, oppure un numero: ti do l’altra forma.'),
       ),
 
-      confermata ? null : h('div', { class: 'avviso' },
-        h('strong', null, 'Controlla i nomi. '),
-        'La scala qui sotto è un punto di partenza, non una verità: i nomi cambiano con la lingua e con le versioni del gioco. ',
-        'Confrontala con quella che vedi su Hattrick e correggi quello che non torna — le modifiche restano salvate. ',
-        h('button', {
-          class: 'btn minuto', type: 'button', style: { marginLeft: '6px' },
-          onclick: () => scalaSalvata.modifica((s) => { s.confermata = true; }),
-        }, 'L’ho controllata'),
+      h('div', { class: 'avviso' },
+        h('strong', null, 'Scala italiana, 0–20. '),
+        'Vale sia per le abilità dei giocatori sia per i rating dei reparti. ',
+        'I ', h('em', null, 'sottolivelli'), ' (molto basso, basso, alto, molto alto) sono invece un’ipotesi non verificata: ',
+        'se in gioco li vedi scritti diversamente, correggili nel pannello in fondo.',
       ),
 
       riquadro({
@@ -99,7 +95,7 @@ export function render(host) {
             ...scala.map((nome, i) => campoTesto({
               etichetta: `Livello ${i}`,
               valore: nome,
-              onInput: (v) => scalaSalvata.modifica((s) => { s.scala[i] = v; s.confermata = false; }),
+              onInput: (v) => scalaSalvata.modifica((s) => { s.scala[i] = v; }),
             })),
           ),
           h('h3', null, 'Sottolivelli'),
@@ -107,13 +103,13 @@ export function render(host) {
             ...sottolivelli.map((nome, i) => campoTesto({
               etichetta: `Sottolivello ${i}`,
               valore: nome,
-              onInput: (v) => scalaSalvata.modifica((s) => { s.sottolivelli[i] = v; s.confermata = false; }),
+              onInput: (v) => scalaSalvata.modifica((s) => { s.sottolivelli[i] = v; }),
             })),
           ),
           h('div', { class: 'in-riga', style: { marginBottom: '12px' } },
             h('button', {
               class: 'btn minuto', type: 'button',
-              onclick: () => scalaSalvata.sostituisci({ scala: [...SCALA_PREDEFINITA], sottolivelli: [...SOTTOLIVELLI_PREDEFINITI], confermata: false }),
+              onclick: () => scalaSalvata.sostituisci({ scala: [...SCALA_PREDEFINITA], sottolivelli: [...SOTTOLIVELLI_PREDEFINITI] }),
             }, 'Ripristina i nomi predefiniti'),
           ),
         ),

@@ -48,7 +48,8 @@ export function render(host) {
       h('div', { class: 'avviso' },
         h('strong', null, 'Da tarare. '),
         'Hattrick non pubblica quanto ogni ruolo pesa sui rating: i contributi di partenza sono stime dichiarate. ',
-        'Confronta i numeri con i resoconti delle tue partite e correggili nel pannello in fondo — da lì in poi la scheda parla il tuo linguaggio.',
+        'Confronta i numeri con i resoconti delle tue partite e correggili nel pannello in fondo — da lì in poi la scheda parla il tuo linguaggio. ',
+        'I rating dei reparti usano la stessa scala 0–20 delle abilità, quindi una volta tarato il fattore i nomi sono quelli che leggi in gioco.',
       ),
 
       elenco.length === 0

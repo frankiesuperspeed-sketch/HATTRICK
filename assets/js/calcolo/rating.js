@@ -1,13 +1,18 @@
 /**
  * Conversione tra i nomi verbali di Hattrick e i numeri.
  *
- * ⚠️ La scala qui sotto è il punto di partenza, NON una verità: i nomi
- * cambiano con la lingua e con le versioni del gioco. Sono tutti
- * modificabili dall'interfaccia e salvati nel browser, e ogni funzione di
- * questo modulo riceve la scala da fuori: così, se correggi un nome, tutto
- * il resto si adegua da solo.
+ * La scala principale 0–20 è quella italiana del gioco, confermata sulla
+ * fonte: vale sia per le abilità dei giocatori sia per i rating dei reparti.
+ *
+ * I SOTTOLIVELLI qui sotto (molto basso, basso, alto, molto alto) non sono
+ * invece stati verificati su una fonte, e restano un'ipotesi dichiarata.
+ *
+ * In ogni caso i nomi restano un dato e non delle costanti: cambiano con la
+ * lingua, e ogni funzione di questo modulo riceve la scala da fuori, così
+ * correggerne uno adegua tutto il resto.
  */
 
+/** Scala italiana ufficiale, livello per livello (0 = inesistente, 20 = divino). */
 export const SCALA_PREDEFINITA = [
   'inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente',
   'accettabile', 'buono', 'eccellente', 'formidabile', 'straordinario',
@@ -15,6 +20,7 @@ export const SCALA_PREDEFINITA = [
   'extraterrestre', 'mitico', 'magico', 'utopico', 'divino',
 ];
 
+/** Ipotesi, non verificata: i quarti di livello usati nei rating di partita. */
 export const SOTTOLIVELLI_PREDEFINITI = ['molto basso', 'basso', 'alto', 'molto alto'];
 
 /** Vuoto e nullo NON sono zero: Number(null) vale 0 e farebbe passare per

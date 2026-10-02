@@ -103,3 +103,24 @@ test('la tabella di riferimento copre tutta la scala', () => {
   assert.equal(t[8].valori.length, 4);
   assert.deepEqual(t[8].valori.map((v) => v.valore), [8, 8.25, 8.5, 8.75]);
 });
+
+test('la scala italiana è quella ufficiale, livello per livello', () => {
+  // Fonte: la scala principale di Hattrick in italiano, 0–20, valida sia per
+  // le abilità sia per i rating dei reparti. Bloccata qui perché una modifica
+  // involontaria si veda subito.
+  assert.deepEqual(SCALA_PREDEFINITA, [
+    'inesistente', 'disastroso', 'tremendo', 'scarso', 'debole', 'insufficiente',
+    'accettabile', 'buono', 'eccellente', 'formidabile', 'straordinario',
+    'splendido', 'magnifico', 'fuoriclasse', 'sovrannaturale', 'titanico',
+    'extraterrestre', 'mitico', 'magico', 'utopico', 'divino',
+  ]);
+  assert.equal(SCALA_PREDEFINITA.length, 21, 'da 0 a 20 compresi');
+  assert.equal(SCALA_PREDEFINITA[0], 'inesistente');
+  assert.equal(SCALA_PREDEFINITA[20], 'divino');
+});
+
+test('i nomi scritti sono riconosciuti dalla conversione', () => {
+  SCALA_PREDEFINITA.forEach((nome, livello) => {
+    assert.equal(interpreta(nome)?.livello, livello, `"${nome}" dovrebbe valere ${livello}`);
+  });
+});
