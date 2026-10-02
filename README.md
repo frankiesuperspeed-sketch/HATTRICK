@@ -16,7 +16,18 @@ I dati restano nel browser (`localStorage`).
 | **Forma** | pronta | Rendimento attuale di ogni giocatore rispetto alle sue condizioni normali, tendenza rispetto alla lettura precedente, storico registrabile settimana per settimana. |
 | **Tattiche** | pronta | Confronto fra tutte le tattiche sulla formazione schierata: forza che la rosa dà a ciascuna, effetto sui tre reparti e guadagno rispetto a non farne nessuna. |
 | **Rating** | pronta | Conversione in entrambi i versi tra nomi verbali e numeri, sottolivelli compresi, con tabella di riferimento. La scala dei nomi è modificabile. |
-| **Mercato** | in costruzione | Aste seguite, offerte e prezzi di riferimento. |
+| **Mercato** | pronta | Aste seguite in ordine di chiusura, giudizio sul prezzo dal modello della Valutazione, tetto di spesa personale e impegno massimo confrontato con la cassa. |
+
+## Le schede si parlano
+
+Nessuna scheda è un'isola, e nessun dato si inserisce due volte:
+
+- la **rosa** è una sola e la usano stipendi, valutazione, schieramento, allenamento, forma e giovanili;
+- il **moltiplicatore di forma** dello schieramento è lo stesso che usa la scheda Forma;
+- il **modello di valutazione**, tarato sulle vendite che registri, dà il giudizio sui prezzi nel Mercato;
+- la **cassa** della prima scheda dice, nel Mercato, cosa resta se vinci tutte le aste;
+- la **scala dei rating** convertita nella scheda Rating nomina i valori di reparto dello Schieramento;
+- il **confronto con la prima squadra** è il criterio di promozione delle Giovanili.
 
 ## Un'idea sola: la rosa è condivisa
 
