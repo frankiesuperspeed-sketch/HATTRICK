@@ -121,6 +121,39 @@ Se non sai dove il vhost serve il sito:
 ssh utente@besttoolbox.de 'apachectl -S 2>/dev/null | grep -i hattrick; nginx -T 2>/dev/null | grep -A3 hattrick'
 ```
 
+### Il server (Caddy)
+
+Il sito è servito da Caddy. Il blocco da aggiungere a `/etc/caddy/Caddyfile` è tutto qui:
+
+```caddyfile
+hattrick.besttoolbox.de {
+    root * /var/www/hattrick
+    encode zstd gzip
+    file_server
+}
+```
+
+Caddy ottiene e rinnova il certificato HTTPS da solo, purché il DNS del sottodominio
+punti già al server. Poi:
+
+```bash
+sudo caddy validate --config /etc/caddy/Caddyfile   # controlla prima di applicare
+sudo systemctl reload caddy                          # ricarica senza interrompere il servizio
+```
+
+La cartella va creata una volta sola, leggibile da Caddy e scrivibile da chi pubblica:
+
+```bash
+sudo mkdir -p /var/www/hattrick
+sudo chown -R $USER:$USER /var/www/hattrick
+sudo chmod 755 /var/www/hattrick
+```
+
+> I nomi dei file non contengono un'impronta di versione, quindi **non** conviene
+> aggiungere direttive di cache aggressive: il comportamento predefinito di Caddy
+> (`ETag` e `Last-Modified`) fa già la cosa giusta e dopo una pubblicazione il browser
+> prende subito la versione nuova.
+
 ### Da GitHub, a ogni push su `main`
 
 Il workflow `.github/workflows/deploy.yml` fa le stesse cose in automatico. Richiede
