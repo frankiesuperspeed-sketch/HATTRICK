@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hattrick — strumenti per il manager</title>
+  <meta name="description" content="Stipendi, valutazione giocatori, schieramento, allenamento, giovanili, forma, tattiche, rating e mercato.">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>⚽</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+
+  <header class="app-header">
+    <div class="wrap header-row">
+      <a class="brand" href="#/rosa">
+        <span class="brand-mark" aria-hidden="true">⚽</span>
+        <span class="brand-text">Hattrick<small>strumenti per il manager</small></span>
+      </a>
+      <div class="header-actions">
+        <button id="sorgente-dati" class="chip" type="button" title="Da dove arrivano i dati della squadra">
+          <span class="punto" aria-hidden="true"></span><span data-sorgente-nome>Dati manuali</span>
+        </button>
+        <button id="tema" class="icon-btn" type="button" aria-label="Cambia tema"><span data-tema-icona>◐</span></button>
+      </div>
+    </div>
+    <nav class="wrap schede" id="schede" aria-label="Sezioni">
+      <a href="#/rosa"         data-scheda="rosa">Rosa e stipendi</a>
+      <a href="#/valutazione"  data-scheda="valutazione">Valutazione</a>
+      <a href="#/schieramento" data-scheda="schieramento">Schieramento</a>
+      <a href="#/allenamento"  data-scheda="allenamento">Allenamento</a>
+      <a href="#/giovanili"    data-scheda="giovanili">Giovanili</a>
+      <a href="#/forma"        data-scheda="forma">Forma</a>
+      <a href="#/tattiche"     data-scheda="tattiche">Tattiche</a>
+      <a href="#/rating"       data-scheda="rating">Rating</a>
+      <a href="#/mercato"      data-scheda="mercato">Mercato</a>
+    </nav>
+  </header>
+
+  <main id="contenuto" class="wrap" tabindex="-1">
+    <div id="app" class="vista"></div>
+  </main>
+
+  <footer class="app-footer wrap">
+    <p>I dati restano in questo browser. Progetto amatoriale, non affiliato né approvato da Hattrick.</p>
+  </footer>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

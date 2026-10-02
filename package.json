@@ -1,0 +1,12 @@
+{
+  "name": "hattrick",
+  "version": "0.1.0",
+  "description": "Strumenti per il manager di Hattrick: stipendi, valutazione, schieramento, allenamento, giovanili, forma, tattiche, rating e mercato.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "start": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}
