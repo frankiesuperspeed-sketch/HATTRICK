@@ -15,7 +15,7 @@ I dati restano nel browser (`localStorage`).
 | **Giovanili** | in costruzione | Potenziale dei giovani e momento della promozione. |
 | **Forma** | in costruzione | Andamento di forma e condizione e impatto sui rating. |
 | **Tattiche** | in costruzione | Effetto delle scelte tattiche sui rating. |
-| **Rating** | in costruzione | Conversione tra nomi verbali Hattrick e numeri. |
+| **Rating** | pronta | Conversione in entrambi i versi tra nomi verbali e numeri, sottolivelli compresi, con tabella di riferimento. La scala dei nomi è modificabile. |
 | **Mercato** | in costruzione | Aste seguite, offerte e prezzi di riferimento. |
 
 ## Un'idea sola: la rosa è condivisa
@@ -43,6 +43,13 @@ Per attivarlo servono, in quest'ordine:
 1. registrare l'applicazione su [hattrick.org/en/Chpp](https://www.hattrick.org/en/Chpp) e attenderne l'approvazione;
 2. mettere chiave e segreto in `server/chpp-config.php` **sul server** (il file è escluso da git);
 3. indicare l'indirizzo del proxy nelle impostazioni della sorgente dati.
+
+## I nomi della scala sono un dato, non codice
+
+La scheda *Rating* parte da una scala di nomi (`inesistente` … `divino`) che è
+**modificabile dall'interfaccia** e salvata nel browser. I nomi cambiano con la lingua
+e con le versioni del gioco, quindi nessuna funzione li dà per scontati: la scala viene
+passata da fuori a ogni conversione. Se correggi un nome, si adegua tutto.
 
 ## Avvio in locale
 

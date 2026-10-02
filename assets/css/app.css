@@ -271,6 +271,19 @@ figure.grafico figcaption { font-size: 13px; color: var(--inchiostro-2); margin-
   .intestazione-rosa span:last-child { text-align: right; }
 }
 
+details.parametri { border: 1px solid var(--bordo); border-radius: var(--raggio); background: var(--superficie); }
+details.parametri > summary {
+  cursor: pointer; padding: 12px 16px; font-weight: 550; font-size: 14px; color: var(--inchiostro-2);
+  list-style: none; display: flex; align-items: center; gap: 8px;
+}
+details.parametri > summary::before { content: "✎"; }
+details.parametri > summary::-webkit-details-marker { display: none; }
+details.parametri[open] > summary { border-bottom: 1px solid var(--griglia); }
+details.parametri .corpo-parametri { padding: 14px 16px 4px; }
+
+tr.evidenziata td { background: var(--accento-velo); }
+tr.evidenziata td:first-child { font-weight: 650; }
+
 .vuoto { text-align: center; padding: 28px 16px; color: var(--inchiostro-2); }
 .vuoto p { margin: 0 0 12px; }
 
