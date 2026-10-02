@@ -13,7 +13,7 @@ I dati restano nel browser (`localStorage`).
 | **Schieramento** | pronta | Formazione composta con i giocatori della rosa, valore prodotto da ciascun reparto, chi lo regge, confronto con una fotografia precedente. Contributi dei ruoli modificabili. |
 | **Allenamento** | pronta | Crescita settimanale di chi alleni, scatti previsti con le date, confronto fra tutti i tipi di allenamento sulla stessa rosa, e calibrazione sulle settimane osservate in gioco. |
 | **Giovanili** | in costruzione | Potenziale dei giovani e momento della promozione. |
-| **Forma** | in costruzione | Andamento di forma e condizione e impatto sui rating. |
+| **Forma** | pronta | Rendimento attuale di ogni giocatore rispetto alle sue condizioni normali, tendenza rispetto alla lettura precedente, storico registrabile settimana per settimana. |
 | **Tattiche** | pronta | Confronto fra tutte le tattiche sulla formazione schierata: forza che la rosa dà a ciascuna, effetto sui tre reparti e guadagno rispetto a non farne nessuna. |
 | **Rating** | pronta | Conversione in entrambi i versi tra nomi verbali e numeri, sottolivelli compresi, con tabella di riferimento. La scala dei nomi è modificabile. |
 | **Mercato** | in costruzione | Aste seguite, offerte e prezzi di riferimento. |
