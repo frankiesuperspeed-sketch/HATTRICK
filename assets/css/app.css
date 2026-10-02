@@ -16,9 +16,10 @@
   --linea:       #c6c4ba;
   --bordo:       rgba(17, 17, 15, .10);
 
-  --accento:     #1f6f4a;
-  --accento-2:   #14532f;
-  --accento-velo:#e7f2eb;
+  /* il verde del logo HT-Hub: 5,6:1 su bianco, oltre la soglia per il testo */
+  --accento:     #23772a;
+  --accento-2:   #175420;
+  --accento-velo:#e8f2e9;
 
   --serie-1: #2a78d6;
   --serie-2: #eb6834;
@@ -35,6 +36,13 @@
   --font: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+/* sul fondo scuro il verde del logo risulta spento: lo si schiarisce senza
+   toccare il file, così l'asset resta uno solo */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="chiaro"]) .brand-logo { filter: brightness(1.45) saturate(1.05); }
+}
+:root[data-tema="scuro"] .brand-logo { filter: brightness(1.45) saturate(1.05); }
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema="chiaro"]) {
     color-scheme: dark;
@@ -47,9 +55,9 @@
     --griglia:     #2c2c29;
     --linea:       #3a3a36;
     --bordo:       rgba(255,255,255,.10);
-    --accento:     #4aa877;
-    --accento-2:   #6ec49a;
-    --accento-velo:#16271f;
+    --accento:     #4aad57;
+    --accento-2:   #76c981;
+    --accento-velo:#16241a;
     --serie-1: #3987e5;
     --serie-2: #d95926;
     --serie-3: #199e70;
@@ -69,9 +77,9 @@
   --griglia:     #2c2c29;
   --linea:       #3a3a36;
   --bordo:       rgba(255,255,255,.10);
-  --accento:     #4aa877;
-  --accento-2:   #6ec49a;
-  --accento-velo:#16271f;
+  --accento:     #4aad57;
+  --accento-2:   #76c981;
+  --accento-velo:#16241a;
   --serie-1: #3987e5;
   --serie-2: #d95926;
   --serie-3: #199e70;
@@ -109,10 +117,14 @@ img { max-width: 100%; }
 .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px 8px; }
 .header-actions { display: flex; align-items: center; gap: 8px; }
 
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
-.brand-mark { font-size: 24px; line-height: 1; }
-.brand-text { display: flex; flex-direction: column; font-weight: 650; letter-spacing: -.02em; font-size: 18px; }
-.brand-text small { font-weight: 450; font-size: 11.5px; color: var(--tenue); letter-spacing: 0; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; min-width: 0; }
+.brand-logo { height: 38px; width: auto; display: block; }
+.brand-claim {
+  font-size: 12px; color: var(--tenue); white-space: nowrap;
+  padding-left: 12px; border-left: 1px solid var(--griglia);
+}
+/* sotto i 560px resta il solo logo: la frase non ci sta senza schiacciarlo */
+@media (max-width: 560px) { .brand-claim { display: none; } }
 
 .icon-btn {
   border: 1px solid var(--linea); background: var(--superficie); color: var(--inchiostro-2);

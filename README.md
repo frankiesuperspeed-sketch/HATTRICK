@@ -1,4 +1,4 @@
-# Hattrick
+# HT-Hub
 
 Strumenti di calcolo per il gioco manageriale **Hattrick**, in una sola webapp a schede.
 Statica: HTML, CSS e JavaScript (ES modules), **zero dipendenze e zero build**.
@@ -242,7 +242,12 @@ server/                 intermediario CHPP (in arrivo)
 test/                   test unitari
 ```
 
-## Note legali
+## Marchio e note legali
+
+Il logo HT-Hub (fischietto e marchio denominativo) è in `assets/img/`: `logo.png` è il
+lockup orizzontale usato nell'intestazione, `marchio.png` il solo fischietto, usato come
+favicon. Il verde del marchio è **#23772A**, ed è lo stesso colore d'accento
+dell'interfaccia in tema chiaro (#4AAD57 in tema scuro, per reggere il contrasto).
 
 Progetto amatoriale, **non affiliato né approvato da Hattrick**.
 "Hattrick" è un marchio dei rispettivi proprietari.
