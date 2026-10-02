@@ -4,18 +4,8 @@ import { h, rimpiazza, riquadro, valore, tabella, campoNumero, campoTesto, campo
 import { barre, COLORI } from '../lib/grafico.js';
 import { denaro, compatto, percento, decimale, intero } from '../lib/formato.js';
 import { deposito } from '../lib/deposito.js';
-import { rosa, giocatori, RUOLI, ABILITA, nomeRuolo } from '../dati/rosa.js';
+import { rosa, giocatori, RUOLI, ABILITA, nomeRuolo, ABILITA_DEL_RUOLO } from '../dati/rosa.js';
 import { adattaModello, stimaPrezzo, confronta, curvaAbilita, curvaEta, MODELLO_PREDEFINITO } from '../calcolo/valutazione.js';
-
-/** Abilità che guida il prezzo, ruolo per ruolo. */
-const ABILITA_DEL_RUOLO = {
-  portiere: 'portiere',
-  difensore: 'difesa',
-  terzino: 'difesa',
-  centrocampista: 'regia',
-  ala: 'cross',
-  attaccante: 'attacco',
-};
 
 const osservazioni = deposito('osservazioni-mercato', { elenco: [] });
 const soggetto = deposito('valutazione-soggetto', { abilita: 9, eta: 24, richiesto: null, giocatoreId: '' });

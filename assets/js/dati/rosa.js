@@ -35,6 +35,18 @@ export const SPECIALITA = [
   { id: 'resistente', nome: 'Resistente' },
 ];
 
+/** L'abilità che conta per ciascun ruolo: la usano valutazione e giovanili. */
+export const ABILITA_DEL_RUOLO = {
+  portiere: 'portiere',
+  difensore: 'difesa',
+  terzino: 'difesa',
+  centrocampista: 'regia',
+  ala: 'cross',
+  attaccante: 'attacco',
+};
+
+export const abilitaDelRuolo = (ruolo) => ABILITA_DEL_RUOLO[ruolo] ?? 'regia';
+
 let contatore = 0;
 const nuovoId = () => `g${Date.now().toString(36)}${(contatore++).toString(36)}`;
 
