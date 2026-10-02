@@ -182,6 +182,11 @@ sudo chown -R $USER:$USER /var/www/hattrick
 sudo chmod 755 /var/www/hattrick
 ```
 
+> Caddy gira con un proprio utente e deve poter **leggere** la cartella. Se il sito
+> risponde `403` pur avendo i file al posto giusto, è quasi sempre questo: la docroot
+> è a 700 invece che a 755. Gli script di pubblicazione forzano `755` sulle cartelle e
+> `644` sui file proprio per evitarlo.
+
 > I nomi dei file non contengono un'impronta di versione, quindi **non** conviene
 > aggiungere direttive di cache aggressive: il comportamento predefinito di Caddy
 > (`ETag` e `Last-Modified`) fa già la cosa giusta e dopo una pubblicazione il browser

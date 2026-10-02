@@ -90,7 +90,10 @@ case "$esito" in
 esac
 
 echo "→ Anteprima: ecco cosa succederebbe sul server"
-rsync -azi --delete --dry-run -e "ssh -p $porta" "$cartella/" "$destinazione/"
+# --chmod: i permessi li decide la destinazione, non la cartella temporanea.
+# Senza, mktemp -d (che crea a 700) rendeva la docroot illeggibile al web
+# server, che rispondeva 403 pur avendo i file al posto giusto.
+rsync -azi --delete --chmod=D755,F644 --dry-run -e "ssh -p $porta" "$cartella/" "$destinazione/"
 
 if [ "$conferma" -eq 1 ]; then
   printf '\nProcedo con la pubblicazione? [s/N] '
@@ -102,5 +105,5 @@ if [ "$conferma" -eq 1 ]; then
 fi
 
 echo "→ Pubblicazione"
-rsync -az --delete -e "ssh -p $porta" "$cartella/" "$destinazione/"
+rsync -az --delete --chmod=D755,F644 -e "ssh -p $porta" "$cartella/" "$destinazione/"
 echo "✓ Fatto: https://hattrick.besttoolbox.de/"

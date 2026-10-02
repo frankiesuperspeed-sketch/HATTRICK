@@ -103,7 +103,7 @@ jobs:
           case "$CARTELLA" in
             /|~|"") echo "::error::DEPLOY_PATH non può essere la radice del server"; exit 1 ;;
           esac
-          rsync -azvi --delete --dry-run \
+          rsync -azvi --delete --chmod=D755,F644 --dry-run \
             -e "ssh -i ~/.ssh/id_deploy -p ${PORTA:-22} -o StrictHostKeyChecking=yes" \
             dist/ "$UTENTE@$HOST:$CARTELLA/"
 
@@ -116,7 +116,7 @@ jobs:
           PORTA: ${{ secrets.DEPLOY_PORT }}
         run: |
           set -euo pipefail
-          rsync -az --delete \
+          rsync -az --delete --chmod=D755,F644 \
             -e "ssh -i ~/.ssh/id_deploy -p ${PORTA:-22} -o StrictHostKeyChecking=yes" \
             dist/ "$UTENTE@$HOST:$CARTELLA/"
           echo "Pubblicato su https://hattrick.besttoolbox.de/"

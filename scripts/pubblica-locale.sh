@@ -73,7 +73,10 @@ cp -p index.html "$cartella/"
 cp -rp assets "$cartella/"
 
 echo "→ Anteprima: ecco cosa cambierebbe in $destinazione"
-rsync -ai --delete --dry-run "$cartella/" "$destinazione/"
+# --chmod: i permessi li decide la destinazione, non la cartella temporanea.
+# Senza, mktemp -d (che crea a 700) rendeva la docroot illeggibile al web
+# server, che rispondeva 403 pur avendo i file al posto giusto.
+rsync -ai --delete --chmod=D755,F644 --dry-run "$cartella/" "$destinazione/"
 
 if [ "$conferma" -eq 1 ]; then
   printf '\nProcedo? [s/N] '
@@ -85,5 +88,5 @@ if [ "$conferma" -eq 1 ]; then
 fi
 
 echo "→ Pubblicazione"
-rsync -a --delete "$cartella/" "$destinazione/"
+rsync -a --delete --chmod=D755,F644 "$cartella/" "$destinazione/"
 echo "✓ Fatto: https://hattrick.besttoolbox.de/"
