@@ -1,0 +1,132 @@
+# Pubblica il sito via SSH/rsync.
+#
+# Secrets da creare in Settings → Secrets and variables → Actions → Secrets
+# (scheda Secrets, non Variables; Repository secrets, non Environment):
+#   DEPLOY_HOST, DEPLOY_USER, DEPLOY_PATH, DEPLOY_SSH_KEY, DEPLOY_KNOWN_HOSTS
+#   DEPLOY_PORT (solo se la porta SSH non è la 22)
+#
+# Finché i secrets non ci sono, il job si ferma al primo passo dicendo quali
+# mancano, senza toccare il server.
+
+name: Pubblica il sito
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      solo_prova:
+        description: "Solo prova: elenca le modifiche senza toccare il server"
+        type: boolean
+        default: false
+
+concurrency:
+  group: pubblicazione
+  cancel-in-progress: false
+
+jobs:
+  pubblica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Dice subito quali impostazioni il workflow vede, senza stamparne i valori.
+      - name: Controllo della configurazione
+        env:
+          S_HOST: ${{ secrets.DEPLOY_HOST }}
+          S_USER: ${{ secrets.DEPLOY_USER }}
+          S_PATH: ${{ secrets.DEPLOY_PATH }}
+          S_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          S_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          V_HOST: ${{ vars.DEPLOY_HOST }}
+          V_KEY: ${{ vars.DEPLOY_SSH_KEY }}
+        run: |
+          stato() { if [ -n "${2:-}" ]; then echo "  $1: presente"; else echo "  $1: ASSENTE"; fi; }
+          echo "Secrets:"
+          stato "DEPLOY_HOST" "${S_HOST:-}"
+          stato "DEPLOY_USER" "${S_USER:-}"
+          stato "DEPLOY_PATH" "${S_PATH:-}"
+          stato "DEPLOY_SSH_KEY" "${S_KEY:-}"
+          stato "DEPLOY_KNOWN_HOSTS" "${S_HOSTS:-}"
+          echo "Variables (qui NON devono stare):"
+          stato "DEPLOY_HOST" "${V_HOST:-}"
+          stato "DEPLOY_SSH_KEY" "${V_KEY:-}"
+          mancanti=""
+          [ -n "${S_HOST:-}" ]  || mancanti="$mancanti DEPLOY_HOST"
+          [ -n "${S_USER:-}" ]  || mancanti="$mancanti DEPLOY_USER"
+          [ -n "${S_PATH:-}" ]  || mancanti="$mancanti DEPLOY_PATH"
+          [ -n "${S_KEY:-}" ]   || mancanti="$mancanti DEPLOY_SSH_KEY"
+          [ -n "${S_HOSTS:-}" ] || mancanti="$mancanti DEPLOY_KNOWN_HOSTS"
+          if [ -n "$mancanti" ]; then
+            echo "::error::Secrets mancanti o vuoti:$mancanti — vanno creati come Repository secrets in Settings → Secrets and variables → Actions, scheda Secrets."
+            exit 1
+          fi
+          echo "Configurazione completa."
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Un sito rotto non deve finire online.
+      - name: Test del motore di calcolo
+        run: npm test
+
+      # Sul server va solo ciò che serve al sito.
+      - name: Prepara la cartella da pubblicare
+        run: |
+          set -euo pipefail
+          rm -rf dist && mkdir -p dist
+          cp index.html dist/
+          cp -r assets dist/
+          echo "Contenuto da pubblicare:"
+          find dist -type f | sort
+
+      - name: Prepara l'accesso SSH
+        env:
+          CHIAVE: ${{ secrets.DEPLOY_SSH_KEY }}
+          IMPRONTE: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$CHIAVE" > ~/.ssh/id_deploy
+          printf '%s\n' "$IMPRONTE" > ~/.ssh/known_hosts
+          chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_deploy && chmod 644 ~/.ssh/known_hosts
+
+      - name: Anteprima delle modifiche sul server
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          UTENTE: ${{ secrets.DEPLOY_USER }}
+          CARTELLA: ${{ secrets.DEPLOY_PATH }}
+          PORTA: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          set -euo pipefail
+          case "$CARTELLA" in
+            /|~|"") echo "::error::DEPLOY_PATH non può essere la radice del server"; exit 1 ;;
+          esac
+          rsync -azvi --delete --dry-run \
+            -e "ssh -i ~/.ssh/id_deploy -p ${PORTA:-22} -o StrictHostKeyChecking=yes" \
+            dist/ "$UTENTE@$HOST:$CARTELLA/"
+
+      - name: Pubblica
+        if: ${{ inputs.solo_prova != true }}
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          UTENTE: ${{ secrets.DEPLOY_USER }}
+          CARTELLA: ${{ secrets.DEPLOY_PATH }}
+          PORTA: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          set -euo pipefail
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/id_deploy -p ${PORTA:-22} -o StrictHostKeyChecking=yes" \
+            dist/ "$UTENTE@$HOST:$CARTELLA/"
+          echo "Pubblicato."
+
+      - name: Solo prova, niente pubblicazione
+        if: ${{ inputs.solo_prova == true }}
+        run: |
+          echo "Eseguita solo la passata di prova."
+          echo "Il server non è stato modificato."
+
+      - name: Rimuovi la chiave dalla macchina di build
+        if: always()
+        run: rm -f ~/.ssh/id_deploy

@@ -86,6 +86,47 @@ In ogni caso i nomi restano un dato e non delle costanti: sono modificabili
 dall'interfaccia — serve a chi gioca in un'altra lingua — e ogni funzione riceve la
 scala da fuori, così correggerne uno adegua tutto il resto.
 
+## Pubblicazione
+
+Il sito è statico e usa solo percorsi relativi con un router a hash, quindi funziona
+sia dalla radice di un dominio sia da una sottocartella, senza regole di rewrite.
+Sul server serve solo `index.html` e `assets/`: test, workflow e file di progetto
+restano fuori.
+
+### Dal proprio computer (nessuna configurazione)
+
+```bash
+./scripts/pubblica.sh utente@server:/var/www/hattrick
+./scripts/pubblica.sh utente@server:/var/www/hattrick --porta 2222
+```
+
+Esegue i test, prepara i file, **mostra in anteprima cosa verrebbe aggiunto, aggiornato
+e cancellato**, e chiede conferma prima di scrivere. Usa la configurazione SSH del tuo
+computer: nessun segreto da configurare da nessuna parte.
+
+### Da GitHub, a ogni push su `main`
+
+Il workflow `.github/workflows/deploy.yml` fa le stesse cose in automatico. Richiede
+questi **Repository secrets** (Settings → Secrets and variables → Actions → scheda
+*Secrets*, non *Variables*):
+
+| Secret | Contenuto |
+|---|---|
+| `DEPLOY_HOST` | host SSH del server |
+| `DEPLOY_USER` | utente SSH |
+| `DEPLOY_PATH` | docroot del **solo** sito, es. `/var/www/hattrick` |
+| `DEPLOY_SSH_KEY` | chiave **privata** dedicata al deploy |
+| `DEPLOY_KNOWN_HOSTS` | output di `ssh-keyscan -p 22 <host>` |
+| `DEPLOY_PORT` | solo se la porta SSH non è la 22 |
+
+Finché mancano, il job si ferma al primo passo elencando quali, **senza toccare il
+server**. Da *Actions → Run workflow* si può anche chiedere la sola passata di prova.
+
+> ⚠️ La sincronizzazione usa `rsync --delete`: `DEPLOY_PATH` dev'essere la cartella del
+> solo sito Hattrick, perché tutto ciò che si trova lì e non è nel repository viene
+> rimosso. Il workflow rifiuta la radice come destinazione ed esegue sempre prima una
+> passata di prova, il cui elenco resta nei log.
+
 ## Avvio in locale
 
 Gli ES modules non funzionano con `file://`, serve un server statico:

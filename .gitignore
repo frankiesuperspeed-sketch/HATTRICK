@@ -3,3 +3,4 @@ node_modules/
 *.log
 _seed.html
 server/chpp-config.php
+dist/
