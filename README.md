@@ -121,6 +121,39 @@ Se non sai dove il vhost serve il sito:
 ssh utente@besttoolbox.de 'apachectl -S 2>/dev/null | grep -i hattrick; nginx -T 2>/dev/null | grep -A3 hattrick'
 ```
 
+### Dal server stesso
+
+Se sei collegato al server in SSH, il repository può stare lì e la pubblicazione
+diventa una copia locale:
+
+```bash
+cd ~/HATTRICK && git pull
+./scripts/pubblica-locale.sh /var/www/hattrick
+```
+
+Stesse garanzie dell'altro script: anteprima di ciò che verrebbe aggiunto e cancellato,
+conferma prima di scrivere, rifiuto delle destinazioni pericolose. I test girano se sul
+server c'è Node; altrimenti vengono saltati con un avviso, tanto girano comunque su
+GitHub a ogni push.
+
+**Il repository è privato**, quindi il server deve potersi autenticare. Il modo pulito è
+una *deploy key* in sola lettura, da creare una volta sola sul server:
+
+```bash
+ssh-keygen -t ed25519 -C "deploy hattrick" -f ~/.ssh/hattrick_deploy -N ""
+cat ~/.ssh/hattrick_deploy.pub
+```
+
+La chiave pubblica va incollata in **Settings → Deploy keys → Add deploy key** del
+repository, **senza** spuntare *Allow write access*. Poi, sempre sul server:
+
+```bash
+printf 'Host github-hattrick\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/hattrick_deploy\n' >> ~/.ssh/config
+git clone github-hattrick:frankiesuperspeed-sketch/HATTRICK.git ~/HATTRICK
+```
+
+Da lì in poi ogni aggiornamento è `git pull` seguito dallo script.
+
 ### Il server (Caddy)
 
 Il sito è servito da Caddy. Il blocco da aggiungere a `/etc/caddy/Caddyfile` è tutto qui:

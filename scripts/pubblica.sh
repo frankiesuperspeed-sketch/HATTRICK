@@ -47,8 +47,10 @@ npm test --silent >/dev/null
 echo "→ Preparazione dei file"
 cartella="$(mktemp -d)"
 trap 'rm -rf "$cartella"' EXIT
-cp index.html "$cartella/"
-cp -r assets "$cartella/"
+# -p preserva le date: senza, ogni copia temporanea sembrerebbe più recente
+# e rsync ritrasferirebbe tutto anche quando non è cambiato niente
+cp -p index.html "$cartella/"
+cp -rp assets "$cartella/"
 
 # Un controllo prima di rsync: "Permission denied (13)" non dice quale dei due
 # problemi sia, se la cartella manca o se non è scrivibile.
