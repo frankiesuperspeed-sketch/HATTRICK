@@ -36,10 +36,19 @@ export function barre({
   const x1 = LARGHEZZA - margineDestro;
   const altoAsse = 20;
 
-  const massimo = Math.max(0, ...righe.flatMap((r) => r.valori.map((v) => (Number.isFinite(v) ? v : 0))));
-  const { passo: tacca, massimo: cima } = scalaTonda(massimo);
+  // l'intervallo comprende lo zero: con valori negativi le barre crescono a
+  // sinistra della linea dello zero, invece di essere schiacciate a zero
+  const tutti = righe.flatMap((r) => r.valori.map((v) => (Number.isFinite(v) ? v : 0)));
+  const grezzoMin = Math.min(0, ...tutti);
+  const grezzoMax = Math.max(0, ...tutti);
+  const { passo: tacca } = scalaTonda(Math.max(Math.abs(grezzoMin), Math.abs(grezzoMax)));
+  const fondo = Math.floor(grezzoMin / tacca) * tacca;
+  const cima = Math.ceil(grezzoMax / tacca) * tacca;
+  const ampiezza = cima - fondo || 1;
+
   const larghezzaPlot = Math.max(1, x1 - x0);
-  const scala = (v) => (cima === 0 ? 0 : (Math.max(0, v) / cima) * larghezzaPlot);
+  const posizione = (v) => x0 + ((v - fondo) / ampiezza) * larghezzaPlot;
+  const xZero = posizione(0);
 
   const altezza = altoAsse + righe.length * passo;
   const svg = s('svg', {
@@ -49,10 +58,17 @@ export function barre({
     preserveAspectRatio: 'xMidYMid meet',
   });
 
-  for (let v = 0; v <= cima + 1e-9; v += tacca) {
-    const x = x0 + scala(v);
-    svg.appendChild(s('line', { class: v === 0 ? 'linea-base' : 'linea-griglia', x1: x, x2: x, y1: altoAsse - 6, y2: altezza }));
-    svg.appendChild(s('text', { class: 'asse', x, y: altoAsse - 11, 'text-anchor': v === 0 ? 'start' : 'middle' }, formato(v)));
+  for (let v = fondo; v <= cima + 1e-9; v += tacca) {
+    const valoreTacca = Math.abs(v) < 1e-9 ? 0 : v;
+    const x = posizione(valoreTacca);
+    svg.appendChild(s('line', {
+      class: valoreTacca === 0 ? 'linea-base' : 'linea-griglia',
+      x1: x, x2: x, y1: altoAsse - 6, y2: altezza,
+    }));
+    svg.appendChild(s('text', {
+      class: 'asse', x, y: altoAsse - 11,
+      'text-anchor': valoreTacca === fondo ? 'start' : valoreTacca === cima ? 'end' : 'middle',
+    }, formato(valoreTacca)));
   }
 
   righe.forEach((riga, i) => {
@@ -65,13 +81,21 @@ export function barre({
     riga.valori.forEach((v0, j) => {
       const v = Number.isFinite(v0) ? v0 : 0;
       const y = yGruppo + j * (spessore + STACCO);
-      const w = scala(v);
+      const estremo = posizione(v);
+      const negativa = v < 0;
+      const w = Math.abs(estremo - xZero);
       const colore = riga.colore || serie[j]?.colore || COLORI[j % COLORI.length];
-      const barra = s('path', { class: 'segno', d: tracciato(x0, y, w, spessore), fill: colore });
+      const barra = s('path', { class: 'segno', d: tracciato(negativa ? estremo : xZero, y, w, spessore, negativa), fill: colore });
       barra.appendChild(s('title', null, `${riga.nome} — ${serie[j]?.nome ? serie[j].nome + ': ' : ''}${formato(v)}${unita ? ' ' + unita : ''}`));
       svg.appendChild(barra);
       if (cifraSullaPunta) {
-        svg.appendChild(s('text', { class: 'cifra-barra', x: x0 + w + 8, y: y + spessore / 2, 'dominant-baseline': 'middle' }, formato(v)));
+        svg.appendChild(s('text', {
+          class: 'cifra-barra',
+          x: negativa ? estremo - 8 : estremo + 8,
+          y: y + spessore / 2,
+          'text-anchor': negativa ? 'end' : 'start',
+          'dominant-baseline': 'middle',
+        }, formato(v)));
       }
     });
   });
@@ -86,11 +110,16 @@ export function barre({
   );
 }
 
-function tracciato(x, y, w, alt) {
+/** Barra con i due angoli arrotondati dalla parte della punta del dato. */
+function tracciato(x, y, w, alt, versoSinistra = false) {
   const r = Math.min(RAGGIO, alt / 2, Math.max(0, w));
   if (w <= 0.5) return `M${x},${y} h0.5 v${alt} h-0.5 Z`;
   if (r <= 0.5) return `M${x},${y} h${w} v${alt} h${-w} Z`;
-  return `M${x},${y} h${w - r} a${r},${r} 0 0 1 ${r},${r} v${alt - 2 * r} a${r},${r} 0 0 1 ${-r},${r} h${-(w - r)} Z`;
+  if (!versoSinistra) {
+    return `M${x},${y} h${w - r} a${r},${r} 0 0 1 ${r},${r} v${alt - 2 * r} a${r},${r} 0 0 1 ${-r},${r} h${-(w - r)} Z`;
+  }
+  // punta a sinistra: si parte dall'estremità arrotondata
+  return `M${x + r},${y} h${w - r} v${alt} h${-(w - r)} a${r},${r} 0 0 1 ${-r},${-r} v${-(alt - 2 * r)} a${r},${r} 0 0 1 ${r},${-r} Z`;
 }
 
 /** Tacche su numeri tondi: 1, 2, 5 per potenze di dieci. */

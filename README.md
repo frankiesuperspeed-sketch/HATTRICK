@@ -14,7 +14,7 @@ I dati restano nel browser (`localStorage`).
 | **Allenamento** | in costruzione | Chi allenare e dove si arriva a fine stagione. |
 | **Giovanili** | in costruzione | Potenziale dei giovani e momento della promozione. |
 | **Forma** | in costruzione | Andamento di forma e condizione e impatto sui rating. |
-| **Tattiche** | in costruzione | Effetto delle scelte tattiche sui rating. |
+| **Tattiche** | pronta | Confronto fra tutte le tattiche sulla formazione schierata: forza che la rosa dà a ciascuna, effetto sui tre reparti e guadagno rispetto a non farne nessuna. |
 | **Rating** | pronta | Conversione in entrambi i versi tra nomi verbali e numeri, sottolivelli compresi, con tabella di riferimento. La scala dei nomi è modificabile. |
 | **Mercato** | in costruzione | Aste seguite, offerte e prezzi di riferimento. |
 
