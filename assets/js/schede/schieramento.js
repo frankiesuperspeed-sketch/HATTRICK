@@ -177,13 +177,18 @@ export function render(host) {
           confronto
             ? tabella({
                 intestazione: ['Reparto', 'Fotografia', 'Adesso', 'Differenza'],
-                righe: confronto.map((c) => [
-                  c.nome, decimale(c.primo, 1), decimale(c.secondo, 1),
-                  h('span', {
-                    class: c.differenza > 0 ? 'cifra positiva' : c.differenza < 0 ? 'cifra negativa' : null,
-                    style: { fontSize: 'inherit', fontWeight: 500 },
-                  }, `${c.differenza >= 0 ? '+' : '−'}${decimale(Math.abs(c.differenza), 1)}`),
-                ]),
+                righe: confronto.map((c) => {
+                  // sotto il decimo mostrato la differenza è rumore di arrotondamento,
+                  // e "−0,0" sarebbe solo fuorviante
+                  const d = Math.abs(c.differenza) < 0.05 ? 0 : c.differenza;
+                  return [
+                    c.nome, decimale(c.primo, 1), decimale(c.secondo, 1),
+                    h('span', {
+                      class: d > 0 ? 'cifra positiva' : d < 0 ? 'cifra negativa' : null,
+                      style: { fontSize: 'inherit', fontWeight: 500 },
+                    }, d === 0 ? 'invariato' : `${d > 0 ? '+' : '−'}${decimale(Math.abs(d), 1)}`),
+                  ];
+                }),
               })
             : null,
           ...SETTORI.map((s) => {
