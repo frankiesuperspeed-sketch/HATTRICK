@@ -9,7 +9,7 @@ I dati restano nel browser (`localStorage`).
 | Scheda | Stato | Cosa fa |
 |---|---|---|
 | **Rosa e stipendi** | pronta | Monte stipendi, margine sulle entrate, chi pesa di più (regola 80/20), costo per ruolo e per età, tenuta della cassa, effetto di una cessione. |
-| **Valutazione** | in costruzione | Prezzo di mercato stimato di un giocatore. |
+| **Valutazione** | pronta | Prezzo stimato di un giocatore, con un modello che si tara sulle vendite che registri tu; confronto col prezzo richiesto e scarti sulle osservazioni. |
 | **Schieramento** | in costruzione | Rating attesi per reparto da una formazione. |
 | **Allenamento** | in costruzione | Chi allenare e dove si arriva a fine stagione. |
 | **Giovanili** | in costruzione | Potenziale dei giovani e momento della promozione. |
@@ -43,6 +43,24 @@ Per attivarlo servono, in quest'ordine:
 1. registrare l'applicazione su [hattrick.org/en/Chpp](https://www.hattrick.org/en/Chpp) e attenderne l'approvazione;
 2. mettere chiave e segreto in `server/chpp-config.php` **sul server** (il file è escluso da git);
 3. indicare l'indirizzo del proxy nelle impostazioni della sorgente dati.
+
+## Niente numeri inventati
+
+Hattrick non pubblica le proprie formule. Dove un valore non è verificabile,
+l'app non lo finge: o lo rende **modificabile e dichiarato come stima**, o lo
+**impara dai tuoi dati**.
+
+La scheda *Valutazione* segue la seconda strada: registri le vendite che vedi sul
+mercato e il modello si tara su quelle. È una regressione sui logaritmi,
+
+```
+ln(prezzo) = a + b · abilità + c · età
+```
+
+quindi il prezzo cresce in modo moltiplicativo con l'abilità e cala con l'età; `b` e
+`c` si leggono direttamente come "un livello in più vale × tanto". Da tre osservazioni
+in poi i coefficienti vengono dai tuoi dati, e R² dice quanto il modello li spiega.
+Sotto quella soglia si usano valori di partenza, dichiarati come tali.
 
 ## I nomi della scala sono un dato, non codice
 

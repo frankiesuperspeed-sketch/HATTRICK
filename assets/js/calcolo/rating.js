@@ -17,7 +17,9 @@ export const SCALA_PREDEFINITA = [
 
 export const SOTTOLIVELLI_PREDEFINITI = ['molto basso', 'basso', 'alto', 'molto alto'];
 
-const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : NaN);
+/** Vuoto e nullo NON sono zero: Number(null) vale 0 e farebbe passare per
+ *  validi dei campi mai compilati. */
+const num = (v) => (v === null || v === undefined || v === '' || !Number.isFinite(Number(v)) ? NaN : Number(v));
 
 /** Minuscolo, senza accenti né punteggiatura: per confrontare quello che scrivi. */
 export function normalizza(testo) {
