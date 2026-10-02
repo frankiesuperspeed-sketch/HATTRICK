@@ -88,6 +88,8 @@ scala da fuori, così correggerne uno adegua tutto il resto.
 
 ## Pubblicazione
 
+Il sito vive su **https://hattrick.besttoolbox.de**.
+
 Il sito è statico e usa solo percorsi relativi con un router a hash, quindi funziona
 sia dalla radice di un dominio sia da una sottocartella, senza regole di rewrite.
 Sul server serve solo `index.html` e `assets/`: test, workflow e file di progetto
@@ -96,8 +98,8 @@ restano fuori.
 ### Dal proprio computer (nessuna configurazione)
 
 ```bash
-./scripts/pubblica.sh utente@server:/var/www/hattrick
-./scripts/pubblica.sh utente@server:/var/www/hattrick --porta 2222
+./scripts/pubblica.sh utente@besttoolbox.de:/var/www/hattrick
+./scripts/pubblica.sh utente@besttoolbox.de:/var/www/hattrick --porta 2222
 ```
 
 Esegue i test, prepara i file, **mostra in anteprima cosa verrebbe aggiunto, aggiornato
@@ -112,11 +114,11 @@ questi **Repository secrets** (Settings → Secrets and variables → Actions �
 
 | Secret | Contenuto |
 |---|---|
-| `DEPLOY_HOST` | host SSH del server |
+| `DEPLOY_HOST` | host SSH del server, es. `besttoolbox.de` |
 | `DEPLOY_USER` | utente SSH |
-| `DEPLOY_PATH` | docroot del **solo** sito, es. `/var/www/hattrick` |
+| `DEPLOY_PATH` | docroot del **solo** sito `hattrick.besttoolbox.de` |
 | `DEPLOY_SSH_KEY` | chiave **privata** dedicata al deploy |
-| `DEPLOY_KNOWN_HOSTS` | output di `ssh-keyscan -p 22 <host>` |
+| `DEPLOY_KNOWN_HOSTS` | output di `ssh-keyscan -p 22 besttoolbox.de` |
 | `DEPLOY_PORT` | solo se la porta SSH non è la 22 |
 
 Finché mancano, il job si ferma al primo passo elencando quali, **senza toccare il

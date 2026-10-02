@@ -1,4 +1,4 @@
-# Pubblica il sito via SSH/rsync.
+# Pubblica il sito su hattrick.besttoolbox.de via SSH/rsync.
 #
 # Secrets da creare in Settings → Secrets and variables → Actions → Secrets
 # (scheda Secrets, non Variables; Repository secrets, non Environment):
@@ -8,7 +8,7 @@
 # Finché i secrets non ci sono, il job si ferma al primo passo dicendo quali
 # mancano, senza toccare il server.
 
-name: Pubblica il sito
+name: Pubblica su hattrick.besttoolbox.de
 
 on:
   push:
@@ -119,7 +119,7 @@ jobs:
           rsync -az --delete \
             -e "ssh -i ~/.ssh/id_deploy -p ${PORTA:-22} -o StrictHostKeyChecking=yes" \
             dist/ "$UTENTE@$HOST:$CARTELLA/"
-          echo "Pubblicato."
+          echo "Pubblicato su https://hattrick.besttoolbox.de/"
 
       - name: Solo prova, niente pubblicazione
         if: ${{ inputs.solo_prova == true }}

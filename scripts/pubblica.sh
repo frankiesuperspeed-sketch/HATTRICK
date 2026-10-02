@@ -2,9 +2,9 @@
 #
 # Pubblica il sito su un server via SSH, dal proprio computer.
 #
-#   ./scripts/pubblica.sh utente@server:/var/www/hattrick
-#   ./scripts/pubblica.sh utente@server:/var/www/hattrick --porta 2222
-#   ./scripts/pubblica.sh utente@server:/var/www/hattrick --si     (senza conferma)
+#   ./scripts/pubblica.sh utente@besttoolbox.de:/var/www/hattrick
+#   ./scripts/pubblica.sh utente@besttoolbox.de:/var/www/hattrick --porta 2222
+#   ./scripts/pubblica.sh utente@besttoolbox.de:/var/www/hattrick --si  (senza conferma)
 #
 # Esegue i test, prepara i file, mostra in anteprima cosa verrebbe aggiunto,
 # aggiornato e CANCELLATO, e chiede conferma prima di scrivere.
@@ -64,4 +64,4 @@ fi
 
 echo "→ Pubblicazione"
 rsync -az --delete -e "ssh -p $porta" "$cartella/" "$destinazione/"
-echo "✓ Fatto."
+echo "✓ Fatto: https://hattrick.besttoolbox.de/"
