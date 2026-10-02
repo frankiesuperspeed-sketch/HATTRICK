@@ -10,7 +10,7 @@ I dati restano nel browser (`localStorage`).
 |---|---|---|
 | **Rosa e stipendi** | pronta | Monte stipendi, margine sulle entrate, chi pesa di più (regola 80/20), costo per ruolo e per età, tenuta della cassa, effetto di una cessione. |
 | **Valutazione** | pronta | Prezzo stimato di un giocatore, con un modello che si tara sulle vendite che registri tu; confronto col prezzo richiesto e scarti sulle osservazioni. |
-| **Schieramento** | in costruzione | Rating attesi per reparto da una formazione. |
+| **Schieramento** | pronta | Formazione composta con i giocatori della rosa, valore prodotto da ciascun reparto, chi lo regge, confronto con una fotografia precedente. Contributi dei ruoli modificabili. |
 | **Allenamento** | in costruzione | Chi allenare e dove si arriva a fine stagione. |
 | **Giovanili** | in costruzione | Potenziale dei giovani e momento della promozione. |
 | **Forma** | in costruzione | Andamento di forma e condizione e impatto sui rating. |
