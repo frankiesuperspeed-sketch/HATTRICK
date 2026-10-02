@@ -50,6 +50,43 @@ trap 'rm -rf "$cartella"' EXIT
 cp index.html "$cartella/"
 cp -r assets "$cartella/"
 
+# Un controllo prima di rsync: "Permission denied (13)" non dice quale dei due
+# problemi sia, se la cartella manca o se non è scrivibile.
+utente_host="${destinazione%%:*}"
+cartella_remota="${destinazione#*:}"
+
+echo "→ Controllo della destinazione sul server"
+esito="$(ssh -p "$porta" "$utente_host" "
+  if [ ! -e '$cartella_remota' ]; then echo manca;
+  elif [ ! -d '$cartella_remota' ]; then echo nondirectory;
+  elif [ ! -w '$cartella_remota' ]; then echo nonscrivibile;
+  else echo ok; fi" 2>/dev/null || echo irraggiungibile)"
+
+case "$esito" in
+  ok) ;;
+  manca)
+    echo >&2
+    echo "La cartella '$cartella_remota' non esiste sul server." >&2
+    echo "Creala e assegnala al tuo utente, poi rilancia:" >&2
+    echo "  ssh -p $porta $utente_host 'sudo mkdir -p $cartella_remota && sudo chown -R \$USER:\$USER $cartella_remota'" >&2
+    echo >&2
+    echo "Se invece il sito vive altrove, usa quel percorso. Per trovarlo:" >&2
+    echo "  ssh -p $porta $utente_host 'apachectl -S 2>/dev/null | grep -i hattrick; nginx -T 2>/dev/null | grep -A3 hattrick'" >&2
+    exit 1 ;;
+  nondirectory)
+    echo "'$cartella_remota' esiste ma non è una cartella." >&2; exit 1 ;;
+  nonscrivibile)
+    echo >&2
+    echo "La cartella '$cartella_remota' esiste ma il tuo utente non può scriverci." >&2
+    echo "Assegnala al tuo utente:" >&2
+    echo "  ssh -p $porta $utente_host 'sudo chown -R \$USER:\$USER $cartella_remota'" >&2
+    exit 1 ;;
+  *)
+    echo "Non riesco a raggiungere $utente_host via SSH sulla porta $porta." >&2
+    echo "Prova prima: ssh -p $porta $utente_host" >&2
+    exit 1 ;;
+esac
+
 echo "→ Anteprima: ecco cosa succederebbe sul server"
 rsync -azi --delete --dry-run -e "ssh -p $porta" "$cartella/" "$destinazione/"
 

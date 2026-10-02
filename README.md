@@ -106,6 +106,21 @@ Esegue i test, prepara i file, **mostra in anteprima cosa verrebbe aggiunto, agg
 e cancellato**, e chiede conferma prima di scrivere. Usa la configurazione SSH del tuo
 computer: nessun segreto da configurare da nessuna parte.
 
+Prima di toccare qualunque cosa controlla la destinazione e, se qualcosa non va, dice
+quale dei quattro casi è: server irraggiungibile, cartella inesistente, non è una
+cartella, oppure esiste ma il tuo utente non può scriverci. In quest'ultimo caso serve
+un passaggio sul server, una volta sola:
+
+```bash
+ssh utente@besttoolbox.de 'sudo mkdir -p /var/www/hattrick && sudo chown -R $USER:$USER /var/www/hattrick'
+```
+
+Se non sai dove il vhost serve il sito:
+
+```bash
+ssh utente@besttoolbox.de 'apachectl -S 2>/dev/null | grep -i hattrick; nginx -T 2>/dev/null | grep -A3 hattrick'
+```
+
 ### Da GitHub, a ogni push su `main`
 
 Il workflow `.github/workflows/deploy.yml` fa le stesse cose in automatico. Richiede
