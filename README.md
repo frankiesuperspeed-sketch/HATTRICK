@@ -1,6 +1,7 @@
 # HT-Hub
 
-Strumenti di calcolo per il gioco manageriale **Hattrick**, in una sola webapp a schede.
+Strumenti di calcolo per gli **aspetti economici** del gioco manageriale **Hattrick**:
+quanto costa la rosa, quanto rende lo stadio, quanto vale un giocatore sul mercato.
 Statica: HTML, CSS e JavaScript (ES modules), **zero dipendenze e zero build**.
 I dati restano nel browser (`localStorage`).
 
@@ -10,31 +11,22 @@ I dati restano nel browser (`localStorage`).
 |---|---|---|
 | **Rosa e stipendi** | pronta | Monte stipendi, margine sulle entrate, chi pesa di più (regola 80/20), costo per ruolo e per età, tenuta della cassa, effetto di una cessione. |
 | **Arena sizer** | pronta | Posti consigliati dai tifosi e dal loro umore, ripartizione fra i quattro settori, costo e durata dei lavori, manutenzione settimanale, incasso atteso per partita e settimane di rientro. |
-| **Valutazione** | pronta | Prezzo stimato di un giocatore, con un modello che si tara sulle vendite che registri tu; confronto col prezzo richiesto e scarti sulle osservazioni. |
-| **Schieramento** | pronta | Formazione composta con i giocatori della rosa, valore prodotto da ciascun reparto, chi lo regge, confronto con una fotografia precedente. Contributi dei ruoli modificabili. |
-| **Allenamento** | pronta | Crescita settimanale di chi alleni, scatti previsti con le date, confronto fra tutti i tipi di allenamento sulla stessa rosa, e calibrazione sulle settimane osservate in gioco. |
-| **Giovanili** | pronta | Crescita misurata sulle letture registrate, confronto con la prima squadra ruolo per ruolo, e per ogni giovane il motivo per cui è (o non è) pronto alla promozione. |
-| **Forma** | pronta | Rendimento attuale di ogni giocatore rispetto alle sue condizioni normali, tendenza rispetto alla lettura precedente, storico registrabile settimana per settimana. |
-| **Tattiche** | pronta | Confronto fra tutte le tattiche sulla formazione schierata: forza che la rosa dà a ciascuna, effetto sui tre reparti e guadagno rispetto a non farne nessuna. |
-| **Rating** | pronta | Conversione in entrambi i versi tra nomi verbali e numeri, sottolivelli compresi, con tabella di riferimento. La scala dei nomi è modificabile. |
-| **Mercato** | pronta | Aste seguite in ordine di chiusura, giudizio sul prezzo dal modello della Valutazione, tetto di spesa personale e impegno massimo confrontato con la cassa. |
+| **Mercato** | pronta | Aste seguite in ordine di chiusura, giudizio sul prezzo da un modello tarato sulle vendite che registri tu, tetto di spesa personale e impegno massimo confrontato con la cassa. |
 
 ## Le schede si parlano
 
 Nessuna scheda è un'isola, e nessun dato si inserisce due volte:
 
-- la **rosa** è una sola e la usano stipendi, valutazione, schieramento, allenamento, forma e giovanili;
-- il **moltiplicatore di forma** dello schieramento è lo stesso che usa la scheda Forma;
-- il **modello di valutazione**, tarato sulle vendite che registri, dà il giudizio sui prezzi nel Mercato;
-- la **cassa** della prima scheda dice, nel Mercato, cosa resta se vinci tutte le aste;
-- la **scala dei rating** convertita nella scheda Rating nomina i valori di reparto dello Schieramento;
-- il **confronto con la prima squadra** è il criterio di promozione delle Giovanili;
-- la **cassa** dice anche all'Arena sizer se i lavori sono alla portata, e l'incasso dei biglietti
-  può tornare nella prima scheda come entrata settimanale.
+- la **rosa** è una sola e la usano stipendi e mercato;
+- la **cassa** della prima scheda dice all'Arena sizer se i lavori sono alla portata,
+  e al Mercato cosa resta se vinci tutte le aste;
+- l'**incasso dei biglietti** dell'Arena sizer può tornare nella prima scheda come
+  entrata settimanale;
+- le **vendite osservate** registrate nel Mercato tarano il modello che giudica i prezzi.
 
 ## Un'idea sola: la rosa è condivisa
 
-I giocatori si inseriscono **una volta** nella scheda *Rosa e stipendi*; tutte le altre
+I giocatori si inseriscono **una volta** nella scheda *Rosa e stipendi*; le altre
 schede leggono la stessa rosa (`assets/js/dati/rosa.js`). Il deposito è reattivo: una
 modifica fatta in una scheda si riflette subito nelle altre.
 
@@ -64,7 +56,7 @@ Hattrick non pubblica le proprie formule. Dove un valore non è verificabile,
 l'app non lo finge: o lo rende **modificabile e dichiarato come stima**, o lo
 **impara dai tuoi dati**.
 
-La scheda *Valutazione* segue la seconda strada: registri le vendite che vedi sul
+La scheda *Mercato* segue la seconda strada: registri le vendite che vedi sul
 mercato e il modello si tara su quelle. È una regressione sui logaritmi,
 
 ```
@@ -93,19 +85,6 @@ più 10.000 di spesa fissa per aprire il cantiere, 6 per posto smantellato, e
 `7 + costo/100.000` giorni di lavori. L'affluenza attesa è `tifosi × (8,929 + 1,1606 ×
 umore)`. Se Hattrick cambia questi numeri, si correggono nel pannello in fondo alla
 scheda senza toccare il codice.
-
-## La scala dei rating
-
-La scala italiana 0–20 (`inesistente` … `divino`) è quella ufficiale del gioco e vale
-sia per le abilità dei giocatori sia per i rating dei reparti. È bloccata da un test,
-così una modifica involontaria si vede subito.
-
-I **sottolivelli** (molto basso, basso, alto, molto alto) sono invece un'ipotesi non
-verificata, e la scheda lo dichiara.
-
-In ogni caso i nomi restano un dato e non delle costanti: sono modificabili
-dall'interfaccia — serve a chi gioca in un'altra lingua — e ogni funzione riceve la
-scala da fuori, così correggerne uno adegua tutto il resto.
 
 ## Pubblicazione
 

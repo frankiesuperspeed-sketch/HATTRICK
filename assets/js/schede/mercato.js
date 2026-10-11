@@ -5,7 +5,7 @@ import { barre, COLORI } from '../lib/grafico.js';
 import { denaro, denaroSegnato, compatto, decimale, percento, intero } from '../lib/formato.js';
 import { deposito } from '../lib/deposito.js';
 import { rosa, RUOLI, nomeRuolo } from '../dati/rosa.js';
-import { adattaModello } from '../calcolo/valutazione.js';
+import { adattaModello, stimaPrezzo } from '../calcolo/valutazione.js';
 import { analizzaMercato } from '../calcolo/mercato.js';
 
 const osservazioni = deposito('osservazioni-mercato', { elenco: [] });
@@ -42,7 +42,7 @@ export function render(host) {
     rimpiazza(host,
       h('div', { class: 'testata' },
         h('h1', null, 'Mercato'),
-        h('p', null, 'Le aste che stai seguendo, quanto manca alla chiusura e se il prezzo regge il confronto con la tua valutazione.'),
+        h('p', null, 'Le aste che stai seguendo, quanto manca alla chiusura e se il prezzo regge il confronto con le vendite che hai visto davvero.'),
       ),
 
       avvisi(q.avvisi),
@@ -78,8 +78,53 @@ export function render(host) {
       }),
 
       ...(q.righe.length ? risultati({ q, valuta, cassa, modello }) : []),
+
+      vendite({ elenco: osservazioni.leggi().elenco, modello, valuta }),
     );
   };
+
+  /**
+   * Le vendite viste sul mercato: sono i dati su cui si tara il modello che
+   * giudica i prezzi, quindi stanno nella scheda che quel giudizio lo usa.
+   */
+  function vendite({ elenco, modello, valuta }) {
+    const aggiungi = () => osservazioni.modifica((st) => {
+      st.elenco.push({ id: `o${Date.now()}`, abilita: 9, eta: 24, prezzo: null, nota: '' });
+    });
+    const aggiorna = (id, campi) => osservazioni.modifica((st) => {
+      const o = st.elenco.find((x) => x.id === id);
+      if (o) Object.assign(o, campi);
+    });
+
+    return riquadro({
+      titolo: `Vendite osservate — ${elenco.length}`,
+      sottotitolo: 'Ogni riga è un giocatore che hai visto vendere davvero: abilità di riferimento, età e prezzo finale. '
+        + 'Da tre in poi il giudizio sui prezzi viene da qui invece che dai valori di partenza.',
+      azioni: h('button', { class: 'btn minuto', type: 'button', onclick: aggiungi }, '+ Aggiungi vendita'),
+      figli: [
+        elenco.length
+          ? h('div', null,
+              ...elenco.map((o) => h('div', { class: 'riga-elenco' },
+                campoNumero({ etichetta: 'Abilità', passo: 1, min: 0, max: 20, valore: o.abilita, chiave: `oss-ab-${o.id}`, onInput: (v) => aggiorna(o.id, { abilita: v }) }),
+                campoNumero({ etichetta: 'Età', passo: 1, min: 15, max: 45, valore: o.eta, chiave: `oss-eta-${o.id}`, onInput: (v) => aggiorna(o.id, { eta: v }) }),
+                campoNumero({ etichetta: 'Prezzo finale', passo: 10000, min: 0, valore: o.prezzo, chiave: `oss-pr-${o.id}`, onInput: (v) => aggiorna(o.id, { prezzo: v }) }),
+                campoTesto({ etichetta: 'Nota', valore: o.nota, segnaposto: 'es. specialità, ruolo', chiave: `oss-no-${o.id}`, onInput: (v) => aggiorna(o.id, { nota: v }) }),
+                h('div', { class: 'azioni' },
+                  h('button', {
+                    class: 'btn spoglio minuto', type: 'button',
+                    onclick: () => osservazioni.modifica((st) => { st.elenco = st.elenco.filter((x) => x.id !== o.id); }),
+                  }, 'Rimuovi'),
+                ),
+              )),
+              elenco.length >= 3 ? tabellaScarti(elenco, modello, valuta) : null,
+            )
+          : h('div', { class: 'vuoto' },
+              h('p', null, 'Nessuna vendita registrata: senza, i prezzi non hanno un metro di paragone.'),
+              h('button', { class: 'btn principale', type: 'button', onclick: aggiungi }, 'Registra la prima vendita'),
+            ),
+      ],
+    });
+  }
 
   function rigaAsta(a, indice) {
     const aggiorna = (campi) => mercato.modifica((st) => { Object.assign(st.aste[indice], campi); });
@@ -143,8 +188,8 @@ export function render(host) {
       riquadro({
         titolo: 'In ordine di chiusura',
         sottotitolo: modello
-          ? `Il giudizio sul prezzo viene dal modello della scheda Valutazione, tarato sulle tue ${modello.n} vendite osservate.`
-          : 'Senza vendite osservate non c’è giudizio sul prezzo: registrane qualcuna nella scheda Valutazione.',
+          ? `Il giudizio sul prezzo viene da un modello tarato sulle tue ${modello.n} vendite osservate, qui sotto.`
+          : 'Senza vendite osservate non c’è giudizio sul prezzo: registrane qualcuna qui sotto.',
         figli: [
           tabella({
             intestazione: ['Giocatore', 'Chiusura', 'Prezzo', 'Stima', 'Giudizio', 'Tetto', 'Margine'],
@@ -215,4 +260,36 @@ export function render(host) {
   const s3 = conti.ascolta(disegna);
   const s4 = rosa.ascolta(disegna);
   return () => { s1(); s2(); s3(); s4(); };
+}
+
+/** Quanto ogni vendita si discosta dal modello: serve a stanare i casi strani. */
+function tabellaScarti(elenco, modello, valuta) {
+  const righe = elenco
+    .filter((o) => Number.isFinite(o.prezzo) && o.prezzo > 0)
+    .map((o) => {
+      const previsto = stimaPrezzo({ abilita: o.abilita, eta: o.eta, modello });
+      const scarto = previsto ? (o.prezzo - previsto) / previsto : null;
+      return { ...o, previsto, scarto };
+    })
+    .sort((a, b) => Math.abs(b.scarto ?? 0) - Math.abs(a.scarto ?? 0));
+
+  if (!righe.length) return null;
+
+  return h('div', { style: { marginTop: '14px' } },
+    h('h3', null, 'Quanto il modello azzecca le tue osservazioni'),
+    tabella({
+      intestazione: ['Vendita', 'Abilità', 'Età', 'Prezzo reale', 'Previsto', 'Scarto'],
+      righe: righe.map((r) => [
+        r.nota || '—',
+        decimale(r.abilita ?? 0, 0),
+        decimale(r.eta ?? 0, 0),
+        denaro(r.prezzo, valuta),
+        denaro(r.previsto, valuta),
+        h('span', {
+          class: r.scarto == null ? null : Math.abs(r.scarto) > 0.3 ? 'cifra negativa' : null,
+          style: { fontSize: 'inherit', fontWeight: 500 },
+        }, r.scarto == null ? '—' : `${r.scarto >= 0 ? '+' : '−'}${percento(Math.abs(r.scarto))}`),
+      ]),
+    }),
+  );
 }

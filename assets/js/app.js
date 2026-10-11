@@ -6,13 +6,6 @@ import { stato as statoSorgente, impostazioni } from './dati/sorgente.js';
 const SCHEDE = {
   rosa:         () => import('./schede/rosa.js'),
   arena:        () => import('./schede/arena.js'),
-  valutazione:  () => import('./schede/valutazione.js'),
-  schieramento: () => import('./schede/schieramento.js'),
-  allenamento:  () => import('./schede/allenamento.js'),
-  giovanili:    () => import('./schede/giovanili.js'),
-  forma:        () => import('./schede/forma.js'),
-  tattiche:     () => import('./schede/tattiche.js'),
-  rating:       () => import('./schede/rating.js'),
   mercato:      () => import('./schede/mercato.js'),
 };
 const PRIMA = 'rosa';
