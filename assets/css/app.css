@@ -20,6 +20,9 @@
   --accento:     #23772a;
   --accento-2:   #175420;
   --accento-velo:#e8f2e9;
+  /* testo scritto sopra il verde: bianco sul verde scuro (5,6:1), inchiostro
+     sul verde chiaro del tema scuro, dove il bianco si fermerebbe a 2,8:1 */
+  --su-accento:  #ffffff;
 
   --serie-1: #2a78d6;
   --serie-2: #eb6834;
@@ -58,6 +61,7 @@
     --accento:     #4aad57;
     --accento-2:   #76c981;
     --accento-velo:#16241a;
+    --su-accento:  #0e0e0d;
     --serie-1: #3987e5;
     --serie-2: #d95926;
     --serie-3: #199e70;
@@ -80,6 +84,7 @@
   --accento:     #4aad57;
   --accento-2:   #76c981;
   --accento-velo:#16241a;
+  --su-accento:  #0e0e0d;
   --serie-1: #3987e5;
   --serie-2: #d95926;
   --serie-3: #199e70;
@@ -189,6 +194,44 @@ input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible
   outline: 2px solid var(--accento); outline-offset: 1px;
 }
 input[type="checkbox"] { width: auto; accent-color: var(--accento); }
+
+/* --- cursori e selettori a segmenti -------------------------------- */
+
+.campo.cursore { gap: 2px; }
+.campo.cursore > label { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.cifra-cursore { font-size: 14px; font-weight: 650; color: var(--inchiostro); font-variant-numeric: tabular-nums; }
+
+input[type="range"] {
+  width: 100%; height: 26px; padding: 0; border: 0; background: transparent;
+  accent-color: var(--accento); cursor: pointer;
+}
+input[type="range"]:focus-visible { outline: 2px solid var(--accento); outline-offset: 2px; border-radius: 4px; }
+
+.marche { position: relative; height: 15px; margin-top: -2px; }
+.marche span {
+  position: absolute; top: 0; transform: translateX(-50%);
+  font-size: 11.5px; line-height: 1.2; color: var(--tenue); white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+/* le tacche agli estremi si appoggiano al bordo invece di uscirne: la prima e
+   l'ultima stanno sempre al minimo e al massimo della scala */
+.marche span:first-child { transform: none; }
+.marche span:last-child { transform: translateX(-100%); }
+
+.gruppo-segmenti { margin-bottom: 12px; }
+.etichetta-segmenti { display: block; font-size: 13px; font-weight: 550; color: var(--inchiostro-2); margin-bottom: 4px; }
+.segmenti {
+  display: flex; gap: 2px; flex-wrap: wrap; padding: 3px;
+  background: var(--superficie-2); border: 1px solid var(--bordo); border-radius: var(--raggio-s);
+}
+.segmenti button {
+  flex: 1 1 0; min-width: 92px; padding: 7px 10px; cursor: pointer;
+  font: inherit; font-size: 13.5px; font-weight: 550;
+  border: 0; border-radius: calc(var(--raggio-s) - 4px);
+  background: transparent; color: var(--inchiostro-2);
+}
+.segmenti button:hover { color: var(--inchiostro); }
+.segmenti button[aria-pressed="true"] { background: var(--accento); color: var(--su-accento); }
 
 .campi { display: grid; gap: 0 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .in-riga { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

@@ -5,6 +5,7 @@ import { stato as statoSorgente, impostazioni } from './dati/sorgente.js';
 
 const SCHEDE = {
   rosa:         () => import('./schede/rosa.js'),
+  arena:        () => import('./schede/arena.js'),
   valutazione:  () => import('./schede/valutazione.js'),
   schieramento: () => import('./schede/schieramento.js'),
   allenamento:  () => import('./schede/allenamento.js'),

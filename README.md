@@ -9,6 +9,7 @@ I dati restano nel browser (`localStorage`).
 | Scheda | Stato | Cosa fa |
 |---|---|---|
 | **Rosa e stipendi** | pronta | Monte stipendi, margine sulle entrate, chi pesa di più (regola 80/20), costo per ruolo e per età, tenuta della cassa, effetto di una cessione. |
+| **Arena sizer** | pronta | Posti consigliati dai tifosi e dal loro umore, ripartizione fra i quattro settori, costo e durata dei lavori, manutenzione settimanale, incasso atteso per partita e settimane di rientro. |
 | **Valutazione** | pronta | Prezzo stimato di un giocatore, con un modello che si tara sulle vendite che registri tu; confronto col prezzo richiesto e scarti sulle osservazioni. |
 | **Schieramento** | pronta | Formazione composta con i giocatori della rosa, valore prodotto da ciascun reparto, chi lo regge, confronto con una fotografia precedente. Contributi dei ruoli modificabili. |
 | **Allenamento** | pronta | Crescita settimanale di chi alleni, scatti previsti con le date, confronto fra tutti i tipi di allenamento sulla stessa rosa, e calibrazione sulle settimane osservate in gioco. |
@@ -27,7 +28,9 @@ Nessuna scheda è un'isola, e nessun dato si inserisce due volte:
 - il **modello di valutazione**, tarato sulle vendite che registri, dà il giudizio sui prezzi nel Mercato;
 - la **cassa** della prima scheda dice, nel Mercato, cosa resta se vinci tutte le aste;
 - la **scala dei rating** convertita nella scheda Rating nomina i valori di reparto dello Schieramento;
-- il **confronto con la prima squadra** è il criterio di promozione delle Giovanili.
+- il **confronto con la prima squadra** è il criterio di promozione delle Giovanili;
+- la **cassa** dice anche all'Arena sizer se i lavori sono alla portata, e l'incasso dei biglietti
+  può tornare nella prima scheda come entrata settimanale.
 
 ## Un'idea sola: la rosa è condivisa
 
@@ -72,6 +75,24 @@ quindi il prezzo cresce in modo moltiplicativo con l'abilità e cala con l'età;
 `c` si leggono direttamente come "un livello in più vale × tanto". Da tre osservazioni
 in poi i coefficienti vengono dai tuoi dati, e R² dice quanto il modello li spiega.
 Sotto quella soglia si usano valori di partenza, dichiarati come tali.
+
+La scheda *Arena sizer* segue la prima: costo per posto, manutenzione, prezzo del
+biglietto e percentuali di affluenza sono **stime dichiarate e modificabili**, prese
+nella forma consolidata dal tool [Enterprise Construction
+Online](https://nrgjack.altervista.org/tools/eco) di nrgjack, che è il riferimento
+della comunità italiana. In sintesi:
+
+| Settore | Costruzione | Manutenzione/sett. | Biglietto |
+|---|---|---|---|
+| Gradinate | 45 | 0,5 | 7 |
+| Tribune | 75 | 0,7 | 10 |
+| Tribune coperte | 90 | 1 | 19 |
+| Poltrone VIP | 300 | 2,5 | 35 |
+
+più 10.000 di spesa fissa per aprire il cantiere, 6 per posto smantellato, e
+`7 + costo/100.000` giorni di lavori. L'affluenza attesa è `tifosi × (8,929 + 1,1606 ×
+umore)`. Se Hattrick cambia questi numeri, si correggono nel pannello in fondo alla
+scheda senza toccare il codice.
 
 ## La scala dei rating
 
